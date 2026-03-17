@@ -1,4 +1,4 @@
-console.log('#58. JavaScript homework example file');
+console.log('#58. JavaScript homework example file'); 
 
 /*
  *
@@ -38,9 +38,9 @@ console.log('#58. JavaScript homework example file');
  *
  */
 
-import fs, {createReadStream, createWriteStream, promises as fsPromises } from 'fs';
+import fs, { createReadStream, createWriteStream, promises as fsPromises } from 'fs';
 import { createGunzip, createGzip } from 'zlib'
-import { join, parse } from 'zlib';
+import { join, parse } from 'path';
 import { pipeline } from 'stream';
 import { promisify } from 'util';
 
@@ -70,12 +70,13 @@ async function compressFile(filePath) {
   const compressedFilePath = await getUniquePath(dir, name, ext + '.gz')
 
   const sourseStream = createReadStream(filePath)
-  const grizStream = createGunzip()
+  const gzipStream = createGzip()
   const destinationStream = createWriteStream(compressedFilePath)
 
   try {
-    await pipe(sourseStream, grizStream, destinationStream)
+    await pipe(sourseStream, gzipStream, destinationStream)
     console.log('Compression finished successfully.')
+    return compressedFilePath
   } catch (err) {
     console.error ('An error occurred during compression:', err)
     throw err
@@ -124,12 +125,12 @@ async function decompressFile(compressedFilePath, destinationFilePath) {
     throw err
   })
 
-  const sourseStream = createReadStream(compressedFilePath)
+  const sourceStream = createReadStream(compressedFilePath)
   const gunzipStream = createGunzip()
-  const destinationStream = createWriteStream(filePath)
+  const destinationStream = createWriteStream(finalPath)
 
   try {
-    await pipe(sourseStream, gunzipStream, destinationStream)
+    await pipe(sourceStream, gunzipStream, destinationStream)
     console.log('Decompression finished successfully.')
     return finalPath
   } catch (err) {
